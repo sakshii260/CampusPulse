@@ -11,7 +11,7 @@ export default function ComplaintForm() {
     e.preventDefault();
 
     try {
-      await axios.post("http://localhost:5000/api/complaints", {
+      const res = await axios.post("/api/complaints", {
         name,
         issue,
         description,
@@ -19,15 +19,12 @@ export default function ComplaintForm() {
       });
 
       alert("Complaint Submitted Successfully!");
+      console.log(res.data);
 
-      // reset form
-      setName("");
-      setIssue("");
-      setDescription("");
-      setLocation("");
 
     } catch (err) {
       console.log(err);
+      alert("ERROR:", err.response?.data || err.message);
       alert("Error submitting complaint");
     }
   };
