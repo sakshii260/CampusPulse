@@ -7,30 +7,24 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// middleware
 app.use(cors());
 app.use(express.json());
 
-// DB connect
 connectDB();
 
 // API routes
 app.use("/api/complaints", require("./routes/complaintRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
 
-// ================= FRONTEND =================
-
-// Serve React build
+// Serve frontend
 app.use(express.static(path.join(__dirname, "../frontend/build")));
 
-// ✅ SAFE fallback (NO "*" or "/*")
-app.use((req, res) => {
+// React routing fix
+app.get(/^\/(?!api).*/, (req, res) => {
   res.sendFile(
-    path.join(__dirname, "../frontend/build", "index.html")
+    path.resolve(__dirname, "../frontend/build/index.html")
   );
 });
-
-// ================= SERVER =================
 
 const PORT = process.env.PORT || 5000;
 
