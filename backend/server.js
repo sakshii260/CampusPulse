@@ -27,5 +27,16 @@ app.get(/^\/(?!api).*/, (req, res) => {
 });
 
 const PORT = process.env.PORT || 5000;
+const path = require("path");
+
+// Serve frontend build
+app.use(express.static(path.join(__dirname, "../frontend/build")));
+
+// Catch-all route (VERY IMPORTANT)
+app.get("/*", function (req, res) {
+  res.sendFile(
+    path.join(__dirname, "../frontend/build", "index.html")
+  );
+});
 
 app.listen(PORT, () => console.log(`Server running on ${PORT}`));
