@@ -4,21 +4,36 @@ const Complaints = () => {
   const [complaints, setComplaints] = useState([]);
   const [filter, setFilter] = useState("All");
 
+  // 🔥 FETCH FROM LIVE BACKEND (NO LOCALHOST)
   const fetchComplaints = async () => {
-    const res = await fetch("http://localhost:5000/api/complaints");
-    const data = await res.json();
-    setComplaints(data);
+    try {
+      const res = await fetch("/api/complaints");
+      const data = await res.json();
+      setComplaints(data);
+    } catch (err) {
+      console.log("FETCH ERROR:", err);
+    }
   };
 
   useEffect(() => {
     fetchComplaints();
   }, []);
 
+  // 🔥 UPDATE STATUS
   const markResolved = async (id) => {
-    await fetch(`http://localhost:5000/api/complaints/${id}`, {
-      method: "PUT",
-    });
-    fetchComplaints();
+    try {
+      await fetch(`/api/complaints/${id}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ status: "Resolved" }), // 🔥 IMPORTANT
+      });
+
+      fetchComplaints();
+    } catch (err) {
+      console.log("UPDATE ERROR:", err);
+    }
   };
 
   const filtered =
