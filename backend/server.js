@@ -7,30 +7,37 @@ const connectDB = require("./config/db");
 
 const app = express();
 
-// middleware
+// ================== MIDDLEWARE ==================
 app.use(cors());
 app.use(express.json());
 
-// connect DB
+// ================== DATABASE ==================
 connectDB();
 
-// API routes
+// ================== API ROUTES ==================
 app.use("/api/complaints", require("./routes/complaintRoutes"));
 app.use("/api/auth", require("./routes/authRoutes"));
 
-// 🔥 DEBUG LINE (IMPORTANT)
+// ================== DEBUG ==================
 console.log("Server reached before frontend setup");
 
-// serve frontend
-app.use(express.static(path.join(__dirname, "../frontend/build")));
+// ================== SERVE FRONTEND ==================
+const frontendPath = path.join(__dirname, "../frontend/build");
 
-app.get("/*", (req, res) => {
-  res.sendFile(
-    path.join(__dirname, "../frontend/build", "index.html")
-  );
+// serve static files
+app.use(express.static(frontendPath));
+
+// root route
+app.get("/", (req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-// start server
+// fallback for React routing (IMPORTANT for Express v5)
+app.use((req, res) => {
+  res.sendFile(path.join(frontendPath, "index.html"));
+});
+
+// ================== START SERVER ==================
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
