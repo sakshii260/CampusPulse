@@ -12,7 +12,7 @@ export default function ComplaintForm() {
 
     try {
       const res = await axios.post(
-        "/api/complaints",
+        "https://campuspulse-3-c5ur.onrender.com/api/complaints",
         {
           name,
           issue,
