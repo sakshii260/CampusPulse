@@ -11,21 +11,37 @@ export default function ComplaintForm() {
     e.preventDefault();
 
     try {
-      const res = await axios.post("/api/complaints", {
-        name,
-        issue,
-        description,
-        location, // 🔥 IMPORTANT
-      });
+      const res = await axios.post(
+        "/api/complaints",
+        {
+          name,
+          issue,
+          description,
+          location,
+        },
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
 
+      console.log("SUCCESS:", res.data);
       alert("Complaint Submitted Successfully!");
-      console.log(res.data);
 
+      // 🔥 Clear form after submit
+      setName("");
+      setIssue("");
+      setDescription("");
+      setLocation("");
 
     } catch (err) {
-      console.log(err);
-      alert("ERROR:", err.response?.data || err.message);
-      alert("Error submitting complaint");
+      console.log("ERROR:", err.response?.data || err.message);
+
+      alert(
+        "Error submitting complaint: " +
+          (err.response?.data?.error || err.message)
+      );
     }
   };
 
@@ -68,7 +84,7 @@ export default function ComplaintForm() {
           rows="4"
         />
 
-        {/* 🔥 LOCATION DROPDOWN (STEP 4) */}
+        {/* LOCATION */}
         <select
           value={location}
           onChange={(e) => setLocation(e.target.value)}
@@ -96,7 +112,7 @@ export default function ComplaintForm() {
           <option value="Hostel PG">Hostel PG</option>
           <option value="Hostel Q">Hostel Q</option>
 
-          {/* Campus Areas */}
+          {/* Campus */}
           <option value="G Block">G Block</option>
           <option value="F Block">F Block</option>
           <option value="H Block">H Block</option>
@@ -111,7 +127,7 @@ export default function ComplaintForm() {
           <option value="LT Area">LT Area</option>
         </select>
 
-        {/* SUBMIT BUTTON */}
+        {/* SUBMIT */}
         <button
           type="submit"
           className="w-full bg-white text-black py-3 rounded-xl font-semibold"

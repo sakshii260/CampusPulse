@@ -17,6 +17,8 @@ router.get("/", async (req, res) => {
 // ✅ ADD NEW COMPLAINT
 router.post("/", async (req, res) => {
   try {
+    console.log("BODY:", req.body); // 👈 ADD THIS LINE
+
     const { name, issue, description, location } = req.body;
 
     const newComplaint = new Complaint({
@@ -30,6 +32,7 @@ router.post("/", async (req, res) => {
     res.json(saved);
 
   } catch (err) {
+    console.log("ERROR:", err.message); // 👈 ADD THIS
     res.status(500).json({ error: err.message });
   }
 });
@@ -49,38 +52,6 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-// STATUS STATS
-router.get("/stats/status", async (req, res) => {
-  try {
-    const data = await Complaint.aggregate([
-      {
-        $group: {
-          _id: "$status",
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
-// HOSTEL / LOCATION STATS
-router.get("/stats/location", async (req, res) => {
-  try {
-    const data = await Complaint.aggregate([
-      {
-        $group: {
-          _id: "$location.block", // hostel A, B, C...
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
 
 module.exports = router;
