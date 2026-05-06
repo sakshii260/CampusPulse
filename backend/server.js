@@ -24,17 +24,20 @@ console.log("Server reached before frontend setup");
 // ================== SERVE FRONTEND ==================
 const frontendPath = path.join(__dirname, "../frontend/build");
 
-// serve static files
+// ✅ serve static files (JS, CSS, images)
 app.use(express.static(frontendPath));
 
-// root route
+// ✅ root route
 app.get("/", (req, res) => {
   res.sendFile(path.join(frontendPath, "index.html"));
 });
 
-// fallback for React routing (IMPORTANT for Express v5)
-app.use((req, res) => {
-  res.sendFile(path.join(frontendPath, "index.html"));
+// ✅ FIXED fallback (VERY IMPORTANT)
+app.get("*", (req, res) => {
+  // only send index.html for React routes (NOT for JS/CSS)
+  if (!req.path.includes(".")) {
+    res.sendFile(path.join(frontendPath, "index.html"));
+  }
 });
 
 // ================== START SERVER ==================
